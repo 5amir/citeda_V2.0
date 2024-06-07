@@ -26,24 +26,25 @@ $date_debut = isset($_GET['date_debut']) ? $_GET['date_debut'] : '';
 $date_fin = isset($_GET['date_fin']) ? $_GET['date_fin'] : '';
 
 // Création de la requête SQL avec les filtres
-$query = "SELECT e.dateajout, i.nomimpr AS imprimante, e.nbrphbn, e.nbrphclr, e.nbrimpbn, e.nbrimpclr,
+$query = "SELECT h.date_his, i.nomimpr AS imprimante, h.d_i_phbn, h.n_i_phbn, h.d_i_phclr, 
+          h.n_i_phclr, h.d_i_impbn, h.n_i_impbn, h.d_i_impclr, h.n_i_impclr,
           i.prixphbn, i.priximbn, i.prixphclr, i.priximclr
-          FROM enregistrer e
-          JOIN imprimente i ON e.idimpr = i.idimpr
+          FROM historique h
+          JOIN imprimente i ON h.idimpr = i.idimpr
           WHERE 1";
 
 $params = array();
 
 if ($imprimante_id) {
-    $query .= " AND e.idimpr = ?";
+    $query .= " AND h.idimpr = ?";
     $params[] = $imprimante_id;
 }
 if ($date_debut) {
-    $query .= " AND e.dateajout >= ?";
+    $query .= " AND h.date_his >= ?";
     $params[] = $date_debut;
 }
 if ($date_fin) {
-    $query .= " AND e.dateajout <= ?";
+    $query .= " AND h.date_his <= ?";
     $params[] = $date_fin;
 }
 
@@ -104,33 +105,33 @@ include('header.php');
             </tr>
             <tr>
                 <th>i_d</th>
-                <th>i_a</th>
+                <th>i_n</th>
                 <th>i_d</th>
-                <th>i_a</th>
+                <th>i_n</th>
                 <th>i_d</th>
-                <th>i_a</th>
+                <th>i_n</th>
                 <th>i_d</th>
-                <th>i_a</th>
+                <th>i_n</th>
             </tr>
         </thead>
         <tbody>
             <?php 
             $total_general = 0;
             foreach ($enregistrements as $enregistrement): 
-                $total_phbn = $enregistrement['nbrphbn'] * $enregistrement['prixphbn'];
-                $total_phclr = $enregistrement['nbrphclr'] * $enregistrement['prixphclr'];
-                $total_impbn = $enregistrement['nbrimpbn'] * $enregistrement['priximbn'];
-                $total_impclr = $enregistrement['nbrimpclr'] * $enregistrement['priximclr'];
+                $total_phbn = ($enregistrement['n_i_phbn'] - $enregistrement['d_i_phbn']) * $enregistrement['prixphbn'];
+                $total_phclr = ($enregistrement['n_i_phclr'] - $enregistrement['d_i_phclr']) * $enregistrement['prixphclr'];
+                $total_impbn = ($enregistrement['n_i_impbn'] - $enregistrement['d_i_impbn']) * $enregistrement['priximbn'];
+                $total_impclr = ($enregistrement['n_i_impclr'] - $enregistrement['d_i_impclr']) * $enregistrement['priximclr'];
                 $total = $total_phbn + $total_phclr + $total_impbn + $total_impclr;
                 $total_general += $total;
             ?>
                 <tr>
-                    <td rowspan='2'><?= $enregistrement['dateajout'] ?></td>
+                    <td rowspan='2'><?= $enregistrement['date_his'] ?></td>
                     <td rowspan='2'><?= $enregistrement['imprimante'] ?></td>
-                    <td colspan='2'><?= $enregistrement['nbrphbn'] ?></td>
-                    <td colspan='2'><?= $enregistrement['nbrphclr'] ?></td>
-                    <td colspan='2'><?= $enregistrement['nbrimpbn'] ?></td>
-                    <td colspan='2'><?= $enregistrement['nbrimpclr'] ?></td>
+                    <td colspan='2'><?= ($enregistrement['n_i_phbn'] - $enregistrement['d_i_phbn']) ?></td>
+                    <td colspan='2'><?= ($enregistrement['n_i_phclr'] - $enregistrement['d_i_phclr']) ?></td>
+                    <td colspan='2'><?= ($enregistrement['n_i_impbn'] - $enregistrement['d_i_impbn']) ?></td>
+                    <td colspan='2'><?= ($enregistrement['n_i_impclr'] - $enregistrement['d_i_impclr']) ?></td>
                     <td rowspan='2'><?= number_format($total_phbn, 2) ?> FCFA</td>
                     <td rowspan='2'><?= number_format($total_phclr, 2) ?> FCFA</td>
                     <td rowspan='2'><?= number_format($total_impbn, 2) ?> FCFA</td>
@@ -138,14 +139,14 @@ include('header.php');
                     <td rowspan='2'><?= number_format($total, 2) ?> FCFA</td>
                 </tr>
                 <tr>
-                <th>1</th>
-                <th>1</th>
-                <th>1</th>
-                <th>1</th>
-                <th>1</th>
-                <th>1</th>
-                <th>1</th>
-                <th>1</th>
+                <th><?= $enregistrement['d_i_phbn'] ?></th>
+                <th><?= $enregistrement['n_i_phbn'] ?></th>
+                <th><?= $enregistrement['d_i_phclr'] ?></th>
+                <th><?= $enregistrement['n_i_phclr'] ?></th>
+                <th><?= $enregistrement['d_i_impbn'] ?></th>
+                <th><?= $enregistrement['n_i_impbn'] ?></th>
+                <th><?= $enregistrement['d_i_impclr'] ?></th>
+                <th><?= $enregistrement['n_i_impclr'] ?></th>
             </tr>
             <?php endforeach; ?>
         </tbody>

@@ -20,14 +20,10 @@ if (isset($_POST['enregistrer'])) {
     $query =$bdd->prepare("SELECT * FROM index_imp WHERE idimpr = ? ORDER BY date_index DESC LIMIT 1");
     $query ->execute(array($idimpr));
     $lastindex = $query->fetch();
-
-    $nbrphbn = $_POST['indexphotocopieBn'] - $lastindex['i_phbn'];
-    $nbrphclr = $_POST['indexphotocopieClr'] - $lastindex['i_phclr'];
-    $nbrimpbn = $_POST['indeximpressionBn'] - $lastindex['i_impbn'];
-    $nbrimpclr = $_POST['indeximpressionClr'] - $lastindex['i_impclr'];
   
-    $req = $bdd->prepare('INSERT INTO enregistrer(idimpr,dateajout,nbrphbn,nbrphclr,nbrimpbn,nbrimpclr) VALUES(?,?,?,?,?,?)');
-    $req->execute(Array($idimpr,$datee,$nbrphbn,$nbrphclr,$nbrimpbn,$nbrimpclr));
+    $req = $bdd->prepare('INSERT INTO historique(idimpr,d_i_phbn,n_i_phbn,d_i_phclr,n_i_phclr,d_i_impbn,n_i_impbn,d_i_impclr,n_i_impclr,date_his) VALUES(?,?,?,?,?,?,?,?,?,?)');
+    $req->execute(Array($idimpr,$lastindex['i_phbn'],$_POST['indexphotocopieBn'],$lastindex['i_phclr'],$_POST['indexphotocopieClr'],
+    $lastindex['i_impbn'],$_POST['indeximpressionBn'],$lastindex['i_impclr'],$_POST['indeximpressionClr'],$datee));
 
     $requete = $bdd->prepare('INSERT INTO index_imp(idimpr,i_phbn,i_phclr,i_impbn,i_impclr,date_index) VALUES(?,?,?,?,?,?)');
     $requete->execute(Array($idimpr,$_POST['indexphotocopieBn'],$_POST['indexphotocopieClr'],$_POST['indeximpressionBn'],$_POST['indeximpressionClr'],$datee));
