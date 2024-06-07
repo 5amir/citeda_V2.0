@@ -90,17 +90,27 @@ include('header.php');
     <table border="1">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Imprimante</th>
-                <th>Photocopies Blanc/Noir</th>
-                <th>Photocopies Couleur</th>
-                <th>Impressions Blanc/Noir</th>
-                <th>Impressions Couleur</th>
-                <th>Total Photocopies Blanc/Noir</th>
-                <th>Total Photocopies Couleur</th>
-                <th>Total Impressions Blanc/Noir</th>
-                <th>Total Impressions Couleur</th>
-                <th>Total</th>
+                <th rowspan='2'>Date</th>
+                <th rowspan='2'>Imprimante</th>
+                <th colspan='2'>Photocopies Blanc/Noir</th>
+                <th colspan='2'>Photocopies Couleur</th>
+                <th colspan='2'>Impressions Blanc/Noir</th>
+                <th colspan='2'>Impressions Couleur</></th>
+                <th rowspan='2'>Total Photocopies Blanc/Noir</th>
+                <th rowspan='2'>Total Photocopies Couleur</th>
+                <th rowspan='2'>Total Impressions Blanc/Noir</th>
+                <th rowspan='2'>Total Impressions Couleur</th>
+                <th rowspan='2'>Total</th>
+            </tr>
+            <tr>
+                <th>i_d</th>
+                <th>i_a</th>
+                <th>i_d</th>
+                <th>i_a</th>
+                <th>i_d</th>
+                <th>i_a</th>
+                <th>i_d</th>
+                <th>i_a</th>
             </tr>
         </thead>
         <tbody>
@@ -115,23 +125,33 @@ include('header.php');
                 $total_general += $total;
             ?>
                 <tr>
-                    <td><?= $enregistrement['dateajout'] ?></td>
-                    <td><?= $enregistrement['imprimante'] ?></td>
-                    <td><?= $enregistrement['nbrphbn'] ?></td>
-                    <td><?= $enregistrement['nbrphclr'] ?></td>
-                    <td><?= $enregistrement['nbrimpbn'] ?></td>
-                    <td><?= $enregistrement['nbrimpclr'] ?></td>
-                    <td><?= number_format($total_phbn, 2) ?> FCFA</td>
-                    <td><?= number_format($total_phclr, 2) ?> FCFA</td>
-                    <td><?= number_format($total_impbn, 2) ?> FCFA</td>
-                    <td><?= number_format($total_impclr, 2) ?> FCFA</td>
-                    <td><?= number_format($total, 2) ?> FCFA</td>
+                    <td rowspan='2'><?= $enregistrement['dateajout'] ?></td>
+                    <td rowspan='2'><?= $enregistrement['imprimante'] ?></td>
+                    <td colspan='2'><?= $enregistrement['nbrphbn'] ?></td>
+                    <td colspan='2'><?= $enregistrement['nbrphclr'] ?></td>
+                    <td colspan='2'><?= $enregistrement['nbrimpbn'] ?></td>
+                    <td colspan='2'><?= $enregistrement['nbrimpclr'] ?></td>
+                    <td rowspan='2'><?= number_format($total_phbn, 2) ?> FCFA</td>
+                    <td rowspan='2'><?= number_format($total_phclr, 2) ?> FCFA</td>
+                    <td rowspan='2'><?= number_format($total_impbn, 2) ?> FCFA</td>
+                    <td rowspan='2'><?= number_format($total_impclr, 2) ?> FCFA</td>
+                    <td rowspan='2'><?= number_format($total, 2) ?> FCFA</td>
                 </tr>
+                <tr>
+                <th>1</th>
+                <th>1</th>
+                <th>1</th>
+                <th>1</th>
+                <th>1</th>
+                <th>1</th>
+                <th>1</th>
+                <th>1</th>
+            </tr>
             <?php endforeach; ?>
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="10">Total Général</td>
+                <td colspan="14">Total Général</td>
                 <td><?= number_format($total_general, 2) ?> FCFA</td>
             </tr>
         </tfoot>

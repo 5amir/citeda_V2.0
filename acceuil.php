@@ -75,6 +75,7 @@ die('Erreur : ' . $e->getMessage());
                 <div class="ligne">
                     <label>Imprimante </label>
                     <select name="imprimante" >
+                        <option value=""></option>
                     <?php
                                 $reqmat = $bdd->query('SELECT * FROM imprimente');
                                  while ($donmat = $reqmat->fetch())
@@ -93,11 +94,11 @@ die('Erreur : ' . $e->getMessage());
                     <div class="supp">
                         <div>
                          <input type="text" class="inp" value="B/N" readonly>
-                         <input placeholder="Nbr" type="number" name="indexphotocopieBn" class="inp" required>                  
+                         <input type="number" name="indexphotocopieBn" class="inp" required>                  
                         </div>
                         <div>
                          <input type="text" class="inp clr" value="Clr" readonly>
-                         <input placeholder="Nbr" type="number" name="indexphotocopieClr" class="inp" required>
+                         <input type="number" name="indexphotocopieClr" class="inp" required>
                         </div>
                      </div>
                     
@@ -108,11 +109,11 @@ die('Erreur : ' . $e->getMessage());
                     <div class="supp">
                         <div>
                          <input type="text" class="inp" value="B/N" readonly>
-                         <input placeholder="Nbr" type="number" name="indeximpressionBn" class="inp" required>                  
+                         <input  type="number" name="indeximpressionBn" class="inp" required>                  
                         </div>
                         <div>
                          <input type="text" class="inp clr" value="Clr" readonly>
-                         <input placeholder="Nbr" type="number" name="indeximpressionClr" class="inp" required>
+                         <input  type="number" name="indeximpressionClr" class="inp" required>
                         </div>
                      </div>
                     </div>
@@ -130,4 +131,29 @@ die('Erreur : ' . $e->getMessage());
     </div>
 
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    var selectImprimante = document.querySelector('select[name="imprimante"]');
+    var inputsIndex = document.querySelectorAll('input[name^="index"]');
+
+    selectImprimante.addEventListener('change', function() {
+        var selectedImprimante = selectImprimante.value;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'get_latest_indexes.php?imprimante=' + selectedImprimante, true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                var response = JSON.parse(xhr.responseText);
+                inputsIndex[0].value = response.i_phbn;
+                inputsIndex[1].value = response.i_phclr;
+                inputsIndex[2].value = response.i_impbn;
+                inputsIndex[3].value = response.i_impclr;
+            }
+        };
+        xhr.send();
+    });
+});
+
+</script>
+
 </html>
