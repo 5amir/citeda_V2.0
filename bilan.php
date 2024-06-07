@@ -6,7 +6,7 @@ if (!isset($_SESSION['id'])) {
     exit();
 }
 
-if ($_SESSION['profil']!='PDG') {
+if ($_SESSION['profil'] != 'PDG') {
     header("Location: acceuil.php");
     exit();
 }
@@ -84,8 +84,6 @@ include('header.php');
         
         <label for="date_fin">Date de fin :</label>
         <input type="date" name="date_fin" id="date_fin" value="<?= $date_fin ?>">
-
-        <button type="submit">Filtrer</button>
     </form>
 
     <table border="1">
@@ -96,7 +94,7 @@ include('header.php');
                 <th colspan='2'>Photocopies Blanc/Noir</th>
                 <th colspan='2'>Photocopies Couleur</th>
                 <th colspan='2'>Impressions Blanc/Noir</th>
-                <th colspan='2'>Impressions Couleur</></th>
+                <th colspan='2'>Impressions Couleur</th>
                 <th rowspan='2'>Total Photocopies Blanc/Noir</th>
                 <th rowspan='2'>Total Photocopies Couleur</th>
                 <th rowspan='2'>Total Impressions Blanc/Noir</th>
@@ -157,6 +155,38 @@ include('header.php');
             </tr>
         </tfoot>
     </table>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var selectImprimante = document.getElementById('imprimante_id');
+            var dateDebut = document.getElementById('date_debut');
+            var dateFin = document.getElementById('date_fin');
+
+            function fetchResults() {
+                var imprimanteId = selectImprimante.value;
+                var debut = dateDebut.value;
+                var fin = dateFin.value;
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'bilan.php?imprimante_id=' + imprimanteId + '&date_debut=' + debut + '&date_fin=' + fin, true);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var parser = new DOMParser();
+                        var doc = parser.parseFromString(xhr.responseText, 'text/html');
+                        var newTbody = doc.querySelector('tbody');
+                        var newTfoot = doc.querySelector('tfoot');
+                        
+                        document.querySelector('tbody').innerHTML = newTbody.innerHTML;
+                        document.querySelector('tfoot').innerHTML = newTfoot.innerHTML;
+                    }
+                };
+                xhr.send();
+            }
+
+            selectImprimante.addEventListener('change', fetchResults);
+            dateDebut.addEventListener('change', fetchResults);
+            dateFin.addEventListener('change', fetchResults);
+        });
+    </script>
 </body>
 </html>
-

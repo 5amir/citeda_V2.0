@@ -31,6 +31,7 @@ die('Erreur : ' . $e->getMessage());
 ?>
 
 <div class="info">
+    
     <label for="nom">Nom:</label><?php echo($_SESSION['nom']);?>
     <br><br>
     <label for="email">Email:</label> <?php echo($_SESSION['email']);?>
@@ -41,6 +42,7 @@ die('Erreur : ' . $e->getMessage());
 <div class="container">
 
 <?php
+
     if (isset($_GET['enr']) && $_GET['enr']=="yes") {
         ?>
         
