@@ -48,6 +48,8 @@ if ($date_fin) {
     $params[] = $date_fin;
 }
 
+$query .= " ORDER BY date_his DESC ";
+
 $stmt = $bdd->prepare($query);
 $stmt->execute($params);
 $enregistrements = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -122,6 +124,22 @@ include('header.php');
                 $total_impclr = ($enregistrement['n_i_impclr'] - $enregistrement['d_i_impclr']) * $enregistrement['priximclr'];
                 $total = $total_phbn + $total_phclr + $total_impbn + $total_impclr;
                 $total_general += $total;
+
+                if ($enregistrement['n_i_phbn'] == 0 && $enregistrement['d_i_phbn'] == 0 &&
+                $enregistrement['n_i_phclr'] == 0 && $enregistrement['d_i_phclr'] == 0 &&
+                $enregistrement['n_i_impbn'] == 0 && $enregistrement['d_i_impbn'] == 0 &&
+                $enregistrement['n_i_impclr'] == 0 && $enregistrement['d_i_impclr'] == 0
+                ) {
+                    ?>
+                        <tr>
+                            <td ><?= $enregistrement['date_his'] ?></td>
+                            <td ><?= $enregistrement['imprimante'] ?></td>
+                            <td colspan='13'>L'index de l'imprimante a été réinitialisé</td>
+                        </tr>
+                    <?php
+                }
+                    else {
+                 
             ?>
                 <tr>
                     <td rowspan='2'><?= $enregistrement['date_his'] ?></td>
@@ -146,7 +164,10 @@ include('header.php');
                 <th><?= $enregistrement['d_i_impclr'] ?></th>
                 <th><?= $enregistrement['n_i_impclr'] ?></th>
             </tr>
-            <?php endforeach; ?>
+            
+            <?php      
+                }
+                 endforeach; ?>
         </tbody>
         <tfoot>
             <tr>

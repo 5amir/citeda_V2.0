@@ -27,6 +27,7 @@ catch (Exception $e)
 die('Erreur : ' . $e->getMessage());
 }
 
+
  include"header.php";
 ?>
 
@@ -146,10 +147,10 @@ die('Erreur : ' . $e->getMessage());
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 var response = JSON.parse(xhr.responseText);
-                inputsIndex[0].value = response.i_phbn;
-                inputsIndex[1].value = response.i_phclr;
-                inputsIndex[2].value = response.i_impbn;
-                inputsIndex[3].value = response.i_impclr;
+                inputsIndex[0].value = response.d_i_phbn;
+                inputsIndex[1].value = response.d_i_phclr;
+                inputsIndex[2].value = response.d_i_impbn;
+                inputsIndex[3].value = response.d_i_impclr;
             }
         };
         xhr.send();

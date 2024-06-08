@@ -14,8 +14,9 @@ try
 if (isset($_POST['enregistrer'])) {
 
     $idimpr = $_POST['imprimante'];
-    $datee = date("Y-m-d");
 
+    date_default_timezone_set('Africa/Lagos');
+    $datee = date('y-m-d h:i:s');
    
     $query =$bdd->prepare("SELECT * FROM index_imp WHERE idimpr = ? ORDER BY date_index DESC LIMIT 1");
     $query ->execute(array($idimpr));

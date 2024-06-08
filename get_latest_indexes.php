@@ -6,7 +6,7 @@ $bdd = new PDO('mysql:host=localhost;dbname=citeda', 'root', '');
 $idImprimante = $_GET['imprimante'];
 
 // Requête pour récupérer les derniers index pour cette imprimante
-$query = "SELECT * FROM index_imp WHERE idimpr = :idImprimante ORDER BY date_index DESC LIMIT 1";
+$query = "SELECT * FROM historique WHERE idimpr = :idImprimante ORDER BY date_his DESC LIMIT 1";
 $stmt = $bdd->prepare($query);
 $stmt->execute(array(':idImprimante' => $idImprimante));
 $result = $stmt->fetch(PDO::FETCH_ASSOC);
