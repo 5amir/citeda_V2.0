@@ -39,14 +39,33 @@ if ($imprimante_id) {
     $query .= " AND h.idimpr = ?";
     $params[] = $imprimante_id;
 }
-if ($date_debut) {
-    $query .= " AND h.date_his >= ?";
+
+// Vérifier si les dates de début et de fin sont définies
+if ($date_debut && $date_fin) {
+    // Si les dates de début et de fin sont égales
+    if ($date_debut == $date_fin) {
+        $query .= " AND DATE(h.date_his) = ?";
+        $params[] = $date_debut;
+    } else {
+        // Si les dates de début et de fin sont différentes
+        $query .= " AND DATE(h.date_his) >= ?";
+        $params[] = $date_debut;
+        $query .= " AND DATE(h.date_his) <= ?";
+        $params[] = $date_fin;
+    }
+} elseif ($date_debut) {
+    // Si seule la date de début est définie
+    $query .= " AND DATE(h.date_his) >= ?";
     $params[] = $date_debut;
-}
-if ($date_fin) {
-    $query .= " AND h.date_his <= ?";
+} elseif ($date_fin) {
+    // Si seule la date de fin est définie
+    $query .= " AND DATE(h.date_his) <= ?";
     $params[] = $date_fin;
 }
+
+
+
+
 
 $query .= " ORDER BY date_his DESC ";
 
