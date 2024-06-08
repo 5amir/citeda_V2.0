@@ -23,8 +23,8 @@ if (isset($_POST['enregistrer'])) {
     $lastindex = $query->fetch();
   
     $req = $bdd->prepare('INSERT INTO historique(idimpr,d_i_phbn,n_i_phbn,d_i_phclr,n_i_phclr,d_i_impbn,n_i_impbn,d_i_impclr,n_i_impclr,date_his) VALUES(?,?,?,?,?,?,?,?,?,?)');
-    $req->execute(Array($idimpr,$lastindex['d_i_phbn'],$_POST['indexphotocopieBn'],$lastindex['d_i_phclr'],$_POST['indexphotocopieClr'],
-    $lastindex['d_i_impbn'],$_POST['indeximpressionBn'],$lastindex['d_i_impclr'],$_POST['indeximpressionClr'],$datee));
+    $req->execute(Array($idimpr,$lastindex['n_i_phbn'],$_POST['indexphotocopieBn'],$lastindex['n_i_phclr'],$_POST['indexphotocopieClr'],
+    $lastindex['n_i_impbn'],$_POST['indeximpressionBn'],$lastindex['n_i_impclr'],$_POST['indeximpressionClr'],$datee));
   
     if ($req) {
         header("Location: acceuil.php?enr=yes");
