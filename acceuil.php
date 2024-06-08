@@ -148,9 +148,16 @@ die('Erreur : ' . $e->getMessage());
             if (xhr.readyState == 4 && xhr.status == 200) {
                 var response = JSON.parse(xhr.responseText);
                 inputsIndex[0].value = response.d_i_phbn;
+                inputsIndex[0].setAttribute('min', response.d_i_phbn);
+                
                 inputsIndex[1].value = response.d_i_phclr;
+                inputsIndex[1].setAttribute('min', response.d_i_phclr);
+                
                 inputsIndex[2].value = response.d_i_impbn;
+                inputsIndex[2].setAttribute('min', response.d_i_impbn);
+                
                 inputsIndex[3].value = response.d_i_impclr;
+                inputsIndex[3].setAttribute('min', response.d_i_impclr);
             }
         };
         xhr.send();

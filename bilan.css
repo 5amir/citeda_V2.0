@@ -30,7 +30,7 @@ form select, form input[type="date"] {
 
 form button {
     padding: 10px 20px;
-    background-color: #5cb85c;
+    background-color: #de2020;
     border: none;
     color: #fff;
     border-radius: 4px;
@@ -38,7 +38,7 @@ form button {
 }
 
 form button:hover {
-    background-color: #4cae4c;
+    background-color: #d73535;
 }
 
 table {

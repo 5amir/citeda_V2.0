@@ -54,7 +54,16 @@ $stmt = $bdd->prepare($query);
 $stmt->execute($params);
 $enregistrements = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-include('header.php');
+date_default_timezone_set('Africa/Lagos');
+$datee = date('y-m-d h:i:s');
+
+if (isset($_GET['reset'])) {
+    $req = $bdd->prepare('INSERT INTO historique(idimpr,d_i_phbn,n_i_phbn,d_i_phclr,n_i_phclr,d_i_impbn,n_i_impbn,d_i_impclr,n_i_impclr,date_his) VALUES(?,?,?,?,?,?,?,?,?,?)');
+    $req->execute(Array($imprimante_id,0,0,0,0,0,0,0,0,$datee));
+
+    header("Location: bilan.php?imprimante_id=$imprimante_id&date_debut=&date_fin=&isreset=");
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -68,8 +77,22 @@ include('header.php');
     <title>Bilan des Imprimantes</title>
 </head>
 <body>
-    <h1>Bilan des Imprimantes</h1>
 
+<?php
+include('header.php');
+?>
+    <h1>Bilan des Imprimantes</h1>
+    <?php
+       if (isset($_GET['isreset'])) {
+        ?>
+        
+        <div style="background:whitesmoke; padding:10px;">
+            <h3 style="color:red;">Compteur remise à 0</h3>
+        </div>
+
+        <?php 
+       }
+    ?>
     <form method="GET" action="bilan.php">
         <label for="imprimante_id">Imprimante :</label>
         <select name="imprimante_id" id="imprimante_id">
@@ -87,6 +110,7 @@ include('header.php');
         <label for="date_fin">Date de fin :</label>
         <input type="date" name="date_fin" id="date_fin" value="<?= $date_fin ?>">
     </form>
+    
 
     <table border="1">
         <thead>
@@ -176,6 +200,20 @@ include('header.php');
             </tr>
         </tfoot>
     </table>
+    
+    <form class="reset_form" method="GET" action="bilan.php">
+      <span style="color:red;font-weight:bold;">Réinitialiser les compteurs d'une imprimante</span> <br><br>
+    <label for="imprimante_id">Imprimante :</label>
+        <select name="imprimante_id" id="imprimante_id">
+            <option value=""></option>
+            <?php foreach ($imprimantes as $imprimante): ?>
+                <option value="<?= $imprimante['idimpr'] ?>" <?= ($imprimante_id == $imprimante['idimpr']) ? 'selected' : '' ?>>
+                    <?= $imprimante['nomimpr'] ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+        <button class="reset-btn" type="submit" name="reset" id="reset">Réinitialiser</button>
+    </form>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
