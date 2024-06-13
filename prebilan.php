@@ -17,13 +17,21 @@ try {
     die('Erreur : ' . $e->getMessage());
 }
 
-// Récupération des imprimantes
-$imprimantes = $bdd->query("SELECT idimpr, nomimpr FROM imprimente")->fetchAll(PDO::FETCH_ASSOC);
-
 // Initialisation des filtres
 $imprimante_id = isset($_GET['imprimante_id']) ? $_GET['imprimante_id'] : '';
 $date_debut = isset($_GET['date_debut']) ? $_GET['date_debut'] : '';
 $date_fin = isset($_GET['date_fin']) ? $_GET['date_fin'] : '';
+
+// Vérifier si l'ID de l'imprimante est défini dans l'URL
+if (!$imprimante_id) {
+    die('ID de l\'imprimante manquant dans l\'URL.');
+}
+
+
+// Récupération de l'imprimantes
+$imprimante_q = $bdd->prepare("SELECT * FROM imprimente WHERE idimpr = ?");
+$imprimante_q->execute(array($imprimante_id));
+$imprimante = $imprimante_q->fetch();
 
 // Création de la requête SQL avec les filtres
 $query = "SELECT h.date_his, i.nomimpr AS imprimante, h.d_i_phbn, h.n_i_phbn, h.d_i_phclr, 
@@ -31,14 +39,9 @@ $query = "SELECT h.date_his, i.nomimpr AS imprimante, h.d_i_phbn, h.n_i_phbn, h.
           i.prixphbn, i.priximbn, i.prixphclr, i.priximclr
           FROM historique h
           JOIN imprimente i ON h.idimpr = i.idimpr
-          WHERE 1";
+          WHERE h.idimpr = ?";
 
-$params = array();
-
-if ($imprimante_id) {
-    $query .= " AND h.idimpr = ?";
-    $params[] = $imprimante_id;
-}
+$params = array($imprimante_id);
 
 // Vérifier si les dates de début et de fin sont définies
 if ($date_debut && $date_fin) {
@@ -63,35 +66,27 @@ if ($date_debut && $date_fin) {
     $params[] = $date_fin;
 }
 
-
-
-
-
-$query .= " ORDER BY date_his DESC ";
+$query .= " ORDER BY date_his DESC";
 
 $stmt = $bdd->prepare($query);
 $stmt->execute($params);
 $enregistrements = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 date_default_timezone_set('Africa/Lagos');
-$datee = date('y-m-d h:i:s');
+$datee = date('y-m-d H:i:s');
 
 if (isset($_GET['reset'])) {
 
-    $query =$bdd->prepare("SELECT * FROM historique WHERE idimpr = ? ORDER BY date_his DESC LIMIT 1");
-    $query ->execute(array($idimpr));
+    $query = $bdd->prepare("SELECT * FROM historique WHERE idimpr = ? ORDER BY date_his DESC LIMIT 1");
+    $query->execute(array($imprimante_id));
     $lastindex = $query->fetch();
 
-    date_default_timezone_set('Africa/Lagos');
-    $datee = date('y-m-d h:i:s');
+    $req = $bdd->prepare('INSERT INTO historique(idimpr, d_i_phbn, n_i_phbn, d_i_phclr, n_i_phclr, d_i_impbn, n_i_impbn, d_i_impclr, n_i_impclr, date_his) VALUES(?,?,?,?,?,?,?,?,?,?)');
+    $req->execute(array($imprimante_id, $lastindex['n_i_phbn'], $lastindex['n_i_phbn'], $lastindex['n_i_phclr'], $lastindex['n_i_phclr'], $lastindex['n_i_impbn'], $lastindex['n_i_impbn'], $lastindex['n_i_impclr'], $lastindex['n_i_impclr'], $datee));
 
-    $req = $bdd->prepare('INSERT INTO historique(idimpr,d_i_phbn,n_i_phbn,d_i_phclr,n_i_phclr,d_i_impbn,n_i_impbn,d_i_impclr,n_i_impclr,date_his) VALUES(?,?,?,?,?,?,?,?,?,?)');
-    $req->execute(Array($imprimante_id,$lastindex['n_i_phbn'],$lastindex['n_i_phbn'],$lastindex['n_i_phclr'],$lastindex['n_i_phclr'],
-    $lastindex['n_i_impbn'],$lastindex['n_i_impbn'],$lastindex['n_i_impclr'],$lastindex['n_i_impclr'],$datee));
-
-    header("Location: bilan.php?imprimante_id=$imprimante_id&date_debut=&date_fin=&isreset=");
+    header("Location: prebilan.php?imprimante_id=$imprimante_id&date_debut=&date_fin=&isreset=");
+    exit();
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -102,35 +97,25 @@ if (isset($_GET['reset'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="header.css">
     <link rel="stylesheet" type="text/css" href="bilan.css">
-    <title>Bilan des Imprimantes</title>
+    <title>Bilan de l'Imprimante</title>
 </head>
 <body>
 
 <?php
 include('header.php');
 ?>
-    <h1>Bilan des Imprimantes</h1>
+    <h1>Bilan <?= $imprimante['nomimpr'] ?></h1>
     <?php
        if (isset($_GET['isreset'])) {
         ?>
-        
         <div style="background:whitesmoke; padding:10px;">
-            <h3 style="color:red;">Compteur remise à 0</h3>
+            <h3 style="color:red;">Compteur réinitialisé</h3>
         </div>
-
         <?php 
        }
     ?>
-    <form method="GET" action="bilan.php">
-        <label for="imprimante_id">Imprimante :</label>
-        <select name="imprimante_id" id="imprimante_id">
-            <option value="">Toutes</option>
-            <?php foreach ($imprimantes as $imprimante): ?>
-                <option value="<?= $imprimante['idimpr'] ?>" <?= ($imprimante_id == $imprimante['idimpr']) ? 'selected' : '' ?>>
-                    <?= $imprimante['nomimpr'] ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
+    <form method="GET" action="prebilan.php">
+        <input type="hidden" name="imprimante_id" value="<?= $imprimante_id ?>">
         
         <label for="date_debut">Date de début :</label>
         <input type="date" name="date_debut" id="date_debut" value="<?= $date_debut ?>">
@@ -139,7 +124,6 @@ include('header.php');
         <input type="date" name="date_fin" id="date_fin" value="<?= $date_fin ?>">
     </form>
     
-
     <table border="1">
         <thead>
             <tr>
@@ -176,36 +160,35 @@ include('header.php');
                 $total_impclr = ($enregistrement['n_i_impclr'] - $enregistrement['d_i_impclr']) * $enregistrement['priximclr'];
                 $total = $total_phbn + $total_phclr + $total_impbn + $total_impclr;
                 $total_general += $total;
-           
-                 
-            ?>
-                <tr>
-                    <td rowspan='2'><?= $enregistrement['date_his'] ?></td>
-                    <td rowspan='2'><?= $enregistrement['imprimante'] ?></td>
-                    <td colspan='2'><?= ($enregistrement['n_i_phbn'] - $enregistrement['d_i_phbn']) ?></td>
-                    <td colspan='2'><?= ($enregistrement['n_i_phclr'] - $enregistrement['d_i_phclr']) ?></td>
-                    <td colspan='2'><?= ($enregistrement['n_i_impbn'] - $enregistrement['d_i_impbn']) ?></td>
-                    <td colspan='2'><?= ($enregistrement['n_i_impclr'] - $enregistrement['d_i_impclr']) ?></td>
-                    <td rowspan='2'><?= number_format($total_phbn, 2) ?> FCFA</td>
-                    <td rowspan='2'><?= number_format($total_phclr, 2) ?> FCFA</td>
-                    <td rowspan='2'><?= number_format($total_impbn, 2) ?> FCFA</td>
-                    <td rowspan='2'><?= number_format($total_impclr, 2) ?> FCFA</td>
-                    <td rowspan='2'><?= number_format($total, 2) ?> FCFA</td>
-                </tr>
-                <tr>
-                <th><?= $enregistrement['d_i_phbn'] ?></th>
-                <th><?= $enregistrement['n_i_phbn'] ?></th>
-                <th><?= $enregistrement['d_i_phclr'] ?></th>
-                <th><?= $enregistrement['n_i_phclr'] ?></th>
-                <th><?= $enregistrement['d_i_impbn'] ?></th>
-                <th><?= $enregistrement['n_i_impbn'] ?></th>
-                <th><?= $enregistrement['d_i_impclr'] ?></th>
-                <th><?= $enregistrement['n_i_impclr'] ?></th>
-            </tr>
-            
+
+                
+                    ?>
+                    <tr>
+                        <td rowspan='2'><?= $enregistrement['date_his'] ?></td>
+                        <td rowspan='2'><?= $enregistrement['imprimante'] ?></td>
+                        <td colspan='2'><?= ($enregistrement['n_i_phbn'] - $enregistrement['d_i_phbn']) ?></td>
+                        <td colspan='2'><?= ($enregistrement['n_i_phclr'] - $enregistrement['d_i_phclr']) ?></td>
+                        <td colspan='2'><?= ($enregistrement['n_i_impbn'] - $enregistrement['d_i_impbn']) ?></td>
+                        <td colspan='2'><?= ($enregistrement['n_i_impclr'] - $enregistrement['d_i_impclr']) ?></td>
+                        <td rowspan='2'><?= number_format($total_phbn, 2) ?> FCFA</td>
+                        <td rowspan='2'><?= number_format($total_phclr, 2) ?> FCFA</td>
+                        <td rowspan='2'><?= number_format($total_impbn, 2) ?> FCFA</td>
+                        <td rowspan='2'><?= number_format($total_impclr, 2) ?> FCFA</td>
+                        <td rowspan='2'><?= number_format($total, 2) ?> FCFA</td>
+                    </tr>
+                    <tr>
+                        <th><?= $enregistrement['d_i_phbn'] ?></th>
+                        <th><?= $enregistrement['n_i_phbn'] ?></th>
+                        <th><?= $enregistrement['d_i_phclr'] ?></th>
+                        <th><?= $enregistrement['n_i_phclr'] ?></th>
+                        <th><?= $enregistrement['d_i_impbn'] ?></th>
+                        <th><?= $enregistrement['n_i_impbn'] ?></th>
+                        <th><?= $enregistrement['d_i_impclr'] ?></th>
+                        <th><?= $enregistrement['n_i_impclr'] ?></th>
+                    </tr>
             <?php      
                 
-                 endforeach; ?>
+            endforeach; ?>
         </tbody>
         <tfoot>
             <tr>
@@ -215,33 +198,23 @@ include('header.php');
         </tfoot>
     </table>
     
-    <form class="reset_form" method="GET" action="bilan.php">
-      <span style="color:red;font-weight:bold;">Réinitialiser les compteurs d'une imprimante</span> <br><br>
-    <label for="imprimante_id">Imprimante :</label>
-        <select name="imprimante_id" id="imprimante_id">
-            <option value=""></option>
-            <?php foreach ($imprimantes as $imprimante): ?>
-                <option value="<?= $imprimante['idimpr'] ?>" <?= ($imprimante_id == $imprimante['idimpr']) ? 'selected' : '' ?>>
-                    <?= $imprimante['nomimpr'] ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
+    <form class="reset_form" method="GET" action="prebilan.php">
+        <input type="hidden" name="imprimante_id" value="<?= $imprimante_id ?>">
+        <span style="color:red;font-weight:bold;">Réinitialiser les compteurs de <?= $imprimante['nomimpr'] ?></span><br><br>
         <button class="reset-btn" type="submit" name="reset" id="reset">Réinitialiser</button>
     </form>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            var selectImprimante = document.getElementById('imprimante_id');
             var dateDebut = document.getElementById('date_debut');
             var dateFin = document.getElementById('date_fin');
 
             function fetchResults() {
-                var imprimanteId = selectImprimante.value;
                 var debut = dateDebut.value;
                 var fin = dateFin.value;
 
                 var xhr = new XMLHttpRequest();
-                xhr.open('GET', 'bilan.php?imprimante_id=' + imprimanteId + '&date_debut=' + debut + '&date_fin=' + fin, true);
+                xhr.open('GET', 'prebilan.php?imprimante_id=<?= $imprimante_id ?>&date_debut=' + debut + '&date_fin=' + fin, true);
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState === 4 && xhr.status === 200) {
                         var parser = new DOMParser();
@@ -256,7 +229,6 @@ include('header.php');
                 xhr.send();
             }
 
-            selectImprimante.addEventListener('change', fetchResults);
             dateDebut.addEventListener('change', fetchResults);
             dateFin.addEventListener('change', fetchResults);
         });

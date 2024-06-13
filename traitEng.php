@@ -11,12 +11,13 @@ try
    die('Erreur : ' . $e->getMessage());
    }
 
+   date_default_timezone_set('Africa/Lagos');
+   $datee = date('y-m-d H:i:s');
+
 if (isset($_POST['enregistrer'])) {
 
     $idimpr = $_POST['imprimante'];
 
-    date_default_timezone_set('Africa/Lagos');
-    $datee = date('y-m-d h:i:s');
    
     $query =$bdd->prepare("SELECT * FROM historique WHERE idimpr = ? ORDER BY date_his DESC LIMIT 1");
     $query ->execute(array($idimpr));
