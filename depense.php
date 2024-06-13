@@ -37,10 +37,6 @@ $totalDepenses = $bdd->query('SELECT SUM(montant) as total FROM depenses')->fetc
     <link rel="stylesheet" type="text/css" href="header.css">
     <title>Gestion des Dépenses</title>
     <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: Arial, sans-serif;
-        }
         .container {
             margin-top: 50px;
             max-width: 800px;

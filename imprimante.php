@@ -86,6 +86,10 @@ die('Erreur : ' . $e->getMessage());
                     <label>Prix imp CLR : </label>
                     <input type="number" name="priximpclr" class="inp" required>
                 </div>
+                <div class="ligne">
+                    <label>Index initial : </label>
+                    <input type="number" name="index_init" class="inp" required>
+                </div>
                 
                 
                 <div class="btn">
