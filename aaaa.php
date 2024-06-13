@@ -1,5 +1,16 @@
 <?php
     session_start();
+
+    if (!isset($_SESSION['id'])) {
+        header("Location: index.php");
+        exit();
+    }
+    
+    if ($_SESSION['profil'] != 'PDG') {
+        header("Location: acceuil.php");
+        exit();
+    }
+
     include('header.php');
     ?>
 
@@ -30,7 +41,7 @@
     gap: 15px;
 }
 
-.imprimante-btn, .all-imprimantes-btn {
+.imprimante-btn, .all-imprimantes-btn, .caisse-btn {
     background-color: #007bff;
     color: white;
     border: none;
@@ -56,6 +67,10 @@
 .all-imprimantes-btn {
     background-color: #ffc107;
     color: black;
+}
+ .caisse-btn {
+    background-color: #007bff;
+    color: white;
 }
 
 .imprimante-btn:hover, .all-imprimantes-btn:hover {
@@ -94,6 +109,9 @@
     ?>
     <a href="bilan.php">
         <button class="all-imprimantes-btn">Toutes les imprimantes</button>
+    </a>
+    <a href="caisse.php">
+        <button class="caisse-btn">Caisse</button>
     </a>
 
     </div>
