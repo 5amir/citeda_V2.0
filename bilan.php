@@ -77,8 +77,14 @@ date_default_timezone_set('Africa/Lagos');
 $datee = date('y-m-d h:i:s');
 
 if (isset($_GET['reset'])) {
+
+    $query =$bdd->prepare("SELECT * FROM historique WHERE idimpr = ? ORDER BY date_his DESC LIMIT 1");
+    $query ->execute(array($idimpr));
+    $lastindex = $query->fetch();
+
     $req = $bdd->prepare('INSERT INTO historique(idimpr,d_i_phbn,n_i_phbn,d_i_phclr,n_i_phclr,d_i_impbn,n_i_impbn,d_i_impclr,n_i_impclr,date_his) VALUES(?,?,?,?,?,?,?,?,?,?)');
-    $req->execute(Array($imprimante_id,0,0,0,0,0,0,0,0,$datee));
+    $req->execute(Array($imprimante_id,$lastindex['n_i_phbn'],$lastindex['n_i_phbn'],$lastindex['n_i_phclr'],$lastindex['n_i_phclr'],
+    $lastindex['n_i_impbn'],$lastindex['n_i_impbn'],$lastindex['n_i_impclr'],$lastindex['n_i_impclr'],$datee));
 
     header("Location: bilan.php?imprimante_id=$imprimante_id&date_debut=&date_fin=&isreset=");
 }
@@ -168,10 +174,10 @@ include('header.php');
                 $total = $total_phbn + $total_phclr + $total_impbn + $total_impclr;
                 $total_general += $total;
 
-                if ($enregistrement['n_i_phbn'] == 0 && $enregistrement['d_i_phbn'] == 0 &&
-                $enregistrement['n_i_phclr'] == 0 && $enregistrement['d_i_phclr'] == 0 &&
-                $enregistrement['n_i_impbn'] == 0 && $enregistrement['d_i_impbn'] == 0 &&
-                $enregistrement['n_i_impclr'] == 0 && $enregistrement['d_i_impclr'] == 0
+                if ($enregistrement['n_i_phbn'] ==  $enregistrement['d_i_phbn'] &&
+                $enregistrement['n_i_phclr'] == $enregistrement['d_i_phclr'] &&
+                $enregistrement['n_i_impbn'] == $enregistrement['d_i_impbn'] &&
+                $enregistrement['n_i_impclr'] == $enregistrement['d_i_impclr']
                 ) {
                     ?>
                         <tr>

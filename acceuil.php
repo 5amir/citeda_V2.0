@@ -149,7 +149,7 @@ die('Erreur : ' . $e->getMessage());
                 var response = JSON.parse(xhr.responseText);
                 inputsIndex[0].value = response.n_i_phbn;
                 inputsIndex[0].setAttribute('min', response.n_i_phbn);
-                
+                 
                 inputsIndex[1].value = response.n_i_phclr;
                 inputsIndex[1].setAttribute('min', response.n_i_phclr);
                 
