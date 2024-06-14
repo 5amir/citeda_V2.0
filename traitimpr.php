@@ -32,9 +32,6 @@ if (isset($_POST['ajouter'])) {
     $req2 = $bdd->prepare('INSERT INTO historique(idimpr,d_i_phbn,n_i_phbn,d_i_phclr,n_i_phclr,d_i_impbn,n_i_impbn,d_i_impclr,n_i_impclr,date_his) VALUES(?,?,?,?,?,?,?,?,?,?)');
     $req2->execute(Array($idimpr, $index_init, $index_init, $index_init, $index_init,
     $index_init, $index_init, $index_init, $index_init,$datee));
-  
-    $req3 = $bdd->prepare('INSERT INTO bilan(idimpr,total) VALUES(?,?)');
-    $req3->execute(Array($idimpr,0));
 
     
     if ($req) {
