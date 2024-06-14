@@ -156,10 +156,6 @@ $totalDepenses = $bdd->query('SELECT SUM(montant) as total FROM depenses')->fetc
                             <td colspan="2">Total des Dépenses :</td>
                             <td><?= number_format($totalDepenses, 2) ?> FCFA</td>
                         </tr>
-                        <?php 
-                            // Enregistrement du total général dans la session
-                            $_SESSION['totalDepenses'] = $totalDepenses;
-                        ?>
                     </tbody>
                 </table>
             </div>
