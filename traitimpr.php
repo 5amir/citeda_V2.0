@@ -18,7 +18,6 @@ if (isset($_POST['ajouter'])) {
     $prixphclr = $_POST['prixphclr'];
     $priximpbn = $_POST['priximpbn'];
     $priximpclr = $_POST['priximpclr'];
-    $index_init = $_POST['index_init'];
 
     date_default_timezone_set('Africa/Lagos');
     $datee = date('y-m-d H:i:s');
@@ -30,8 +29,10 @@ if (isset($_POST['ajouter'])) {
     $idimpr = $bdd->lastInsertId();
 
     $req2 = $bdd->prepare('INSERT INTO historique(idimpr,d_i_phbn,n_i_phbn,d_i_phclr,n_i_phclr,d_i_impbn,n_i_impbn,d_i_impclr,n_i_impclr,date_his) VALUES(?,?,?,?,?,?,?,?,?,?)');
-    $req2->execute(Array($idimpr, $index_init, $index_init, $index_init, $index_init,
-    $index_init, $index_init, $index_init, $index_init,$datee));
+    $req2->execute(Array($idimpr, $_POST['index_init_phbn'], $_POST['index_init_phbn'],
+    $_POST['index_init_phclr'], $_POST['index_init_phclr'],
+    $_POST['index_init_impbn'], $_POST['index_init_impbn'],
+    $_POST['index_init_impclr'], $_POST['index_init_impclr'],$datee));
 
     
     if ($req) {

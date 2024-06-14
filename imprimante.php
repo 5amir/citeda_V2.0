@@ -85,11 +85,23 @@ die('Erreur : ' . $e->getMessage());
                 <div class="ligne">
                     <label>Prix imp CLR : </label>
                     <input type="number" name="priximpclr" class="inp" required>
-                </div>
+                </div><br>
                 <div class="ligne">
-                    <label>Index initial : </label>
-                    <input type="number" name="index_init" class="inp" required>
-                </div>
+                    <label>Index init phbn : </label>
+                    <input type="number" name="index_init_phbn" class="inp" required>
+                </div>  
+                <div class="ligne">
+                    <label>Index init phclr : </label>
+                    <input type="number" name="index_init_phclr" class="inp" required>
+                </div>  
+                <div class="ligne">
+                    <label>Index init impbn : </label>
+                    <input type="number" name="index_init_impbn" class="inp" required>
+                </div>  
+                <div class="ligne">
+                    <label>Index init impclr : </label>
+                    <input type="number" name="index_init_impclr" class="inp" required>
+                </div>  
                 
                 
                 <div class="btn">
