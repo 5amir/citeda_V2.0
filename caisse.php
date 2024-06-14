@@ -67,6 +67,10 @@ table tfoot td {
     font-weight: bold;
 }
 
+tfoot tr td:first-child {
+    text-align: right;
+}
+
 .table-container{
     margin-top:30px;
     display:flex;
@@ -85,6 +89,7 @@ table tfoot td {
 
 .total-caisse:hover{
     transform: scale(1.05);
+    box-shadow:5px 5px 5px black;
 }
 
 
@@ -158,7 +163,7 @@ table tfoot td {
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="5">Total</td>
+                        <td colspan="5">Total imprimante</td>
                         <td><?= number_format($total_caisse_impr, 2) ?> FCFA</td>
                     </tr>
                 </tfoot>
@@ -166,7 +171,7 @@ table tfoot td {
         </div>
     </div>
         <div class="total-caisse">
-            <h2><span style="">Caisse :</span> <?= number_format($total_caisse_impr - $totalDepenses, 2) ?> FCFA</h2>
+            <h2><span >Caisse :</span> <?= number_format($total_caisse_impr - $totalDepenses, 2) ?> FCFA</h2>
         </div>
 </body>
 </html>
