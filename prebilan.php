@@ -195,6 +195,11 @@ include('header.php');
                 <td colspan="14">Total Général</td>
                 <td><?= number_format($total_general, 2) ?> FCFA</td>
             </tr>
+            <?php  
+                 $ajour = $bdd->prepare('UPDATE bilan SET total = ? WHERE idimpr = ?');
+                 $ajour->execute(array($total_general,$imprimante_id));
+                 $ajour->closeCursor();
+            ?>
         </tfoot>
     </table>
     
@@ -235,3 +240,4 @@ include('header.php');
     </script>
 </body>
 </html>
+

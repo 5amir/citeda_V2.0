@@ -33,6 +33,8 @@ if (isset($_POST['ajouter'])) {
     $req2->execute(Array($idimpr, $index_init, $index_init, $index_init, $index_init,
     $index_init, $index_init, $index_init, $index_init,$datee));
   
+    $req3 = $bdd->prepare('INSERT INTO bilan(idimpr,total) VALUES(?,?)');
+    $req3->execute(Array($idimpr,0));
 
     
     if ($req) {

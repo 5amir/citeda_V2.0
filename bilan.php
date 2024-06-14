@@ -91,7 +91,6 @@ if (isset($_GET['reset'])) {
 
     header("Location: bilan.php?imprimante_id=$imprimante_id&date_debut=&date_fin=&isreset=");
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -176,8 +175,8 @@ include('header.php');
                 $total_impclr = ($enregistrement['n_i_impclr'] - $enregistrement['d_i_impclr']) * $enregistrement['priximclr'];
                 $total = $total_phbn + $total_phclr + $total_impbn + $total_impclr;
                 $total_general += $total;
-           
-                 
+                
+                
             ?>
                 <tr>
                     <td rowspan='2'><?= $enregistrement['date_his'] ?></td>
